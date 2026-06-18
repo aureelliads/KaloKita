@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota Kalori Minimalis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #222222;
+            letter-spacing: -0.01em;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 330px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .receipt {
+            background: #ffffff;
+            padding: 35px 25px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h2 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 11px;
+            color: #777777;
+            text-transform: uppercase;
+        }
+
+        .divider {
+            border-top: 1px dashed #cccccc;
+            margin: 15px 0;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            font-size: 13px;
+        }
+
+        .form-group label {
+            color: #555555;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            background: transparent;
+            font-family: inherit;
+            font-size: 13px;
+            text-align: right;
+            padding: 2px 0;
+            width: 110px;
+            outline: none;
+            color: #222222;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-bottom: 1px solid #222222;
+        }
+
+        .form-group select {
+            width: 115px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 11px;
+            background: #222222;
+            border: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s ease;
+        }
+
+        .btn-calc:hover {
+            background: #444444;
+        }
+
+        .btn-download {
+            width: 100%;
+            padding: 11px;
+            background: transparent;
+            border: 1px solid #222222;
+            color: #222222;
+            font-family: inherit;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+            text-align: center;
+        }
+
+        .btn-download:hover {
+            background: #222222;
+            color: #ffffff;
+        }
+
+        .receipt-result {
+            display: none;
+            font-size: 13px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            color: #444444;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 14px;
+            color: #222222;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #222222;
+        }
+
+        /* Styling tambahan untuk bagian edukasi hasil */
+        .explanation-box {
+            margin-top: 15px;
+            font-size: 11px;
+            color: #666666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .explanation-title {
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #222222;
+            margin-bottom: 5px;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #888888;
+            margin-top: 25px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="receipt" id="receiptArea">
+        <div class="header">
+            <h2>Rincian Kalori</h2>
+            <p>Laporan Energi Harian Tubuh</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="form-group">
+            <label>Jenis Kelamin</label>
+            <select id="gender">
+                <option value="pria">Pria</option>
+                <option value="wanita">Wanita</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Berat Badan (kg)</label>
+            <input type="number" id="weight" placeholder="0">
+        </div>
+        
+        <div class="form-group">
+            <label>Tinggi Badan (cm)</label>
+            <input type="number" id="height" placeholder="0">
+        </div>
+        
+        <div class="form-group">
+            <label>Usia (tahun)</label>
+            <input type="number" id="age" placeholder="0">
+        </div>
+        
+        <div class="form-group">
+            <label>Tingkat Aktivitas</label>
+            <select id="activity">
+                <option value="1.2">Jarang (1.2)</option>
+                <option value="1.375">Ringan (1.37)</option>
+                <option value="1.55">Sedang (1.55)</option>
+                <option value="1.725">Berat (1.72)</option>
+            </select>
+        </div>
+        
+        <button class="btn-calc" onclick="hitungKalori()">Hitung Total</button>
+        
+        <div class="receipt-result" id="result">
+            <div class="divider"></div>
+            
+            <div class="result-row">
+                <span>Metabolisme Dasar (BMR)</span>
+                <span id="bmrResult">0</span>
+            </div>
+            
+            <div class="total-row">
+                <span>Total TDEE (Pertahankan BB)</span>
+                <span id="tdeeResult">0</span>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="result-row">
+                <span>Defisit Kalori (-500 kkal)</span>
+                <span id="deficitResult">0</span>
+            </div>
+            <div class="result-row">
+                <span>Surplus Kalori (+500 kkal)</span>
+                <span id="surplusResult">0</span>
+            </div>
+            
+            <div class="divider"></div>
+
+            <div class="explanation-box">
+                <div class="explanation-title">[ Interpretasi Data ]</div>
+                <p>• <strong>BMR</strong> adalah energi minimum yang dibutuhkan tubuh saat istirahat total hanya untuk bertahan hidup (bernafas, memompa darah).</p>
+                <p>• <strong>TDEE</strong> adalah total kalori riil yang Anda bakar per hari setelah diakumulasikan dengan aktivitas fisik Anda.</p>
+                <p>• Konsumsi target <strong>Defisit</strong> jika Anda ingin menurunkan berat badan secara berkala, atau target <strong>Surplus</strong> jika ingin meningkatkan massa tubuh/otot.</p>
+            </div>
+
+            <div class="footer">
+                <p>Terima kasih telah menggunakan layanan kami<br>Utamakan kesehatan Anda hari ini</p>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-download" id="downloadBtn" onclick="downloadNota()">↓ Unduh Nota (PNG)</button>
+</div>
+
+<script>
+function hitungKalori() {
+    const gender = document.getElementById('gender').value;
+    const weight = parseFloat(document.getElementById('weight').value);
+    const height = parseFloat(document.getElementById('height').value);
+    const age = parseInt(document.getElementById('age').value);
+    const activity = parseFloat(document.getElementById('activity').value);
+    
+    if (!weight || !height || !age) {
+        alert("Mohon lengkapi semua data terlebih dahulu.");
+        return;
+    }
+    
+    let bmr = 0;
+    if (gender === 'pria') {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+    } else {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+    }
+    
+    const tdee = bmr * activity;
+    const deficit = tdee - 500;
+    const surplus = tdee + 500;
+    
+    document.getElementById('bmrResult').innerText = Math.round(bmr) + " kkal";
+    document.getElementById('tdeeResult').innerText = Math.round(tdee) + " kkal";
+    document.getElementById('deficitResult').innerText = Math.round(deficit) + " kkal";
+    document.getElementById('surplusResult').innerText = Math.round(surplus) + " kkal";
+    
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('downloadBtn').style.display = 'block';
+}
+
+function downloadNota() {
+    const targetArea = document.getElementById('receiptArea');
+    
+    html2canvas(targetArea, {
+        backgroundColor: '#ffffff', 
+        scale: 2 
+    }).then(canvas => {
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement('a');
+        link.download = 'nota-kalori-lengkap.png';
+        link.href = image;
+        link.click();
+    });
+}
+</script>
+
+</body>
+</html>

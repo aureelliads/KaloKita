@@ -162,16 +162,16 @@
             border-top: 1px solid #222222;
         }
 
-        /* Styling tambahan untuk bagian edukasi hasil */
-        .explanation-box {
+        /* Styling box kesimpulan dinamis */
+        .summary-box {
             margin-top: 15px;
             font-size: 11px;
-            color: #666666;
+            color: #444444;
             line-height: 1.6;
             text-align: justify;
         }
 
-        .explanation-title {
+        .summary-title {
             font-weight: 600;
             text-transform: uppercase;
             color: #222222;
@@ -261,11 +261,9 @@
             
             <div class="divider"></div>
 
-            <div class="explanation-box">
-                <div class="explanation-title">[ Interpretasi Data ]</div>
-                <p>• <strong>BMR</strong> adalah energi minimum yang dibutuhkan tubuh saat istirahat total hanya untuk bertahan hidup (bernafas, memompa darah).</p>
-                <p>• <strong>TDEE</strong> adalah total kalori riil yang Anda bakar per hari setelah diakumulasikan dengan aktivitas fisik Anda.</p>
-                <p>• Konsumsi target <strong>Defisit</strong> jika Anda ingin menurunkan berat badan secara berkala, atau target <strong>Surplus</strong> jika ingin meningkatkan massa tubuh/otot.</p>
+            <div class="summary-box">
+                <div class="summary-title">[ Kesimpulan Nota ]</div>
+                <span id="summaryText">Memproses data...</span>
             </div>
 
             <div class="footer">
@@ -306,6 +304,19 @@ function hitungKalori() {
     document.getElementById('deficitResult').innerText = Math.round(deficit) + " kkal";
     document.getElementById('surplusResult').innerText = Math.round(surplus) + " kkal";
     
+    // LOGIKA KESIMPULAN OTOMATIS
+    let kesimpulan = "";
+    if (tdee < 1800) {
+        kesimpulan = "Pengeluaran energi harian Anda tergolong rendah. Jika ingin defisit kalori, fokuslah pada makanan padat nutrisi tinggi protein agar tetap kenyang, serta imbangi dengan berjalan kaki 5.000 langkah sehari.";
+    } else if (tdee >= 1800 && tdee <= 2400) {
+        kesimpulan = "Kebutuhan energi Anda berada di rata-rata normal. Tubuh Anda memiliki metabolisme yang seimbang. Pertahankan pola makan teratur dan pastikan hidrasi tubuh tercukupi dengan baik.";
+    } else {
+        kesimpulan = "Tubuh Anda membakar energi dalam jumlah besar setiap hari (metabolisme aktif). Jika target Anda adalah surplus untuk membangun otot, pastikan kebutuhan protein harian Anda terpenuhi secara maksimal.";
+    }
+    
+    // Masukkan teks kesimpulan ke dalam HTML
+    document.getElementById('summaryText').innerText = kesimpulan;
+    
     document.getElementById('result').style.display = 'block';
     document.getElementById('downloadBtn').style.display = 'block';
 }
@@ -319,7 +330,7 @@ function downloadNota() {
     }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
-        link.download = 'nota-kalori-lengkap.png';
+        link.download = 'nota-kalori-kesimpulan.png';
         link.href = image;
         link.click();
     });
